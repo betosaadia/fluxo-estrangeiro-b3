@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluxo de Capital Estrangeiro — B3</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0A241C; font-family: Calibri, Candara, sans-serif; }
+.wrap { padding: 28px 28px 48px; }
+.chart-block { margin-bottom: 52px; }
+.ttl { color: #F2EAD8; font-size: 17px; font-weight: 700; text-decoration: underline; margin-bottom: 4px; }
+.acum { color: #C9A84C; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.sub { color: #C9BFA8; font-size: 11px; font-weight: 300; margin-bottom: 14px; }
+.legend { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+.leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #C9BFA8; }
+.leg-sq { width: 10px; height: 10px; border-radius: 2px; }
+.leg-line { width: 20px; height: 3px; border-radius: 2px; background: #C9A84C; }
+.chart-wrap { position: relative; width: 100%; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="chart-block">
+    <div class="ttl">Fluxo de Capital Estrangeiro Anual (R$ Bi)</div>
+    <div class="acum">Acumulado 2026: R$ +33,26 Bi</div>
+    <div class="sub">B3 &middot; Fluxo mensal acumulado &middot; Fonte: Dados de Mercado</div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-sq" style="background:#2E7D5E"></div>2025</div>
+      <div class="leg-item"><div class="leg-sq" style="background:#737373"></div>2026</div>
+    </div>
+    <div class="chart-wrap" style="height:340px;">
+      <canvas id="c1"></canvas>
+    </div>
+  </div>
+
+  <div class="chart-block">
+    <div class="ttl">Fluxo de Capital Estrangeiro Diário (R$ Bi)</div>
+    <div class="acum">Acumulado 2026: R$ +33,26 Bi</div>
+    <div class="sub">B3 &middot; Fluxo por pregão &middot; Fonte: Dados de Mercado &middot; Jan&ndash;Jul 2026</div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-sq" style="background:#2E7D5E"></div>Entrada</div>
+      <div class="leg-item"><div class="leg-sq" style="background:#737373"></div>Saída</div>
+      <div class="leg-item"><div class="leg-line"></div>MM 30p</div>
+    </div>
+    <div class="chart-wrap" style="height:380px;">
+      <canvas id="c2"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const BG='#0A241C',GREEN='#2E7D5E',GRAY='#737373',GOLD='#C9A84C',CREAM='#F2EAD8',CREAM_M='#C9BFA8',GRID='#163328',AXIS='#1B6B5A';
+
+const labelsM=['Jan/25','Fev/25','Mar/25','Abr/25','Mai/25','Jun/25','Jul/25','Ago/25','Set/25','Out/25','Nov/25','Dez/25','Jan/26','Fev/26','Mar/26','Abr/26','Mai/26','Jun/26','Jul/26*'];
+const valuesM=[6.8,0.7,3.1,-0.1,10.6,5.4,-6.4,1.2,5.3,-1.2,2.1,-1.9,26.31,15.40,11.66,3.18,-14.91,-7.79,-0.59];
+const colorsM=valuesM.map((v,i)=>i>=12?GRAY:GREEN);
+
+new Chart(document.getElementById('c1'),{
+  type:'bar',
+  data:{labels:labelsM,datasets:[{data:valuesM,backgroundColor:colorsM,borderRadius:0,borderSkipped:false}]},
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{backgroundColor:'#071A14',borderColor:'#163328',borderWidth:1,titleColor:CREAM,bodyColor:CREAM_M,
+        callbacks:{label:c=>' R$ '+c.parsed.y.toFixed(2).replace('.',',')+' Bi'}}
+    },
+    scales:{
+      x:{grid:{color:GRID,lineWidth:0.8},border:{color:AXIS,width:1.5},ticks:{color:CREAM_M,font:{size:9},maxRotation:45,autoSkip:false}},
+      y:{min:-18,max:30,grid:{color:GRID,lineWidth:0.8},border:{color:AXIS,width:1.5,dash:[4,4]},
+        ticks:{color:CREAM_M,font:{size:9},callback:v=>v<0?'('+Math.abs(v)+')':v}}
+    },
+    animation:{onComplete:function(){
+      const chart=this,ctx=chart.ctx;
+      ctx.save();ctx.font='600 8.5px Calibri,sans-serif';ctx.textAlign='center';
+      chart.data.datasets[0].data.forEach((v,i)=>{
+        const meta=chart.getDatasetMeta(0),bar=meta.data[i];
+        const lbl=v.toFixed(2).replace('.',',');
+        ctx.fillStyle=CREAM;
+        ctx.fillText(lbl,bar.x,v>=0?bar.y-4:bar.y+13);
+      });
+      ctx.restore();
+    }}
+  }
+});
+
+const dataD=[
+  ["02/01",-917.52],["05/01",-212.35],["06/01",457.12],["07/01",1242.28],["08/01",180.08],["09/01",624.19],
+  ["12/01",648.66],["13/01",960.31],["14/01",1646.06],["15/01",585.08],["16/01",2115.42],["19/01",314.36],
+  ["20/01",1123.23],["21/01",3583.55],["22/01",3406.92],["23/01",1970.92],["26/01",2472.11],["27/01",1524.71],
+  ["28/01",1336.70],["29/01",2258.14],["30/01",993.64],["02/02",1593.12],["03/02",514.70],["04/02",761.19],
+  ["05/02",74.16],["06/02",41.33],["09/02",1214.38],["10/02",573.45],["11/02",2434.22],["12/02",1152.95],
+  ["13/02",397.18],["18/02",-693.26],["19/02",2228.09],["20/02",-1022.25],["23/02",3016.46],["24/02",2132.95],
+  ["25/02",847.86],["26/02",825.73],["27/02",-696.51],["02/03",712.76],["03/03",-390.85],["04/03",692.82],
+  ["05/03",-606.47],["06/03",373.00],["09/03",1468.43],["10/03",458.79],["11/03",-576.44],["12/03",155.31],
+  ["13/03",1172.90],["16/03",551.40],["17/03",565.19],["18/03",622.66],["19/03",1665.45],["20/03",-1510.69],
+  ["23/03",464.02],["24/03",1231.33],["25/03",1034.86],["26/03",-187.84],["27/03",975.26],["30/03",603.41],
+  ["31/03",2180.20],["01/04",1411.86],["02/04",376.94],["06/04",-176.87],["07/04",-1072.85],["08/04",2614.10],
+  ["09/04",8398.42],["10/04",2473.43],["13/04",417.67],["14/04",1262.67],["15/04",-1031.98],["16/04",-771.22],
+  ["17/04",-2421.61],["20/04",32.13],["22/04",-459.99],["23/04",-917.97],["24/04",-1546.18],["27/04",-423.91],
+  ["28/04",-1295.63],["29/04",-1939.67],["30/04",-1750.62],["04/05",-1395.76],["05/05",-472.12],["06/05",-285.43],
+  ["07/05",-1157.79],["08/05",118.78],["11/05",-1126.67],["12/05",-934.38],["13/05",-1196.97],["14/05",-717.54],
+  ["15/05",-2472.66],["18/05",-891.86],["19/05",-903.34],["20/05",-277.31],
+  ["21/05",-999.96],["22/05",-388.20],["25/05",-342.02],["26/05",-364.49],["27/05",-296.04],
+  ["28/05",-190.78],["29/05",-615.45],["01/06",-884.99],["02/06",-45.15],["03/06",-474.93],
+  ["05/06",-448.80],["08/06",18.90],["09/06",-1581.74],["10/06",-149.05],
+  ["11/06",-751.08],["12/06",-2.28],["15/06",998.28],["16/06",-1204.05],["17/06",72.76],
+  ["18/06",80.77],["19/06",-1.72],["22/06",-2086.22],["23/06",-1063.33],["24/06",-855.52],
+  ["25/06",-410.78],["26/06",34.74],["29/06",666.52],["30/06",302.09],["01/07",-589.82],
+];
+
+const labelsD=dataD.map(d=>d[0]);
+const valuesD=dataD.map(d=>d[1]/1000);
+const colorsD=valuesD.map(v=>v>=0?GREEN:GRAY);
+const mm30=valuesD.map((_,i)=>i<29?null:valuesD.slice(i-29,i+1).reduce((a,b)=>a+b,0)/30);
+const firstMM=mm30[29];
+const mm30Chart=mm30.map(v=>v===null?firstMM:v);
+const monthNames=['Jan','Fev','Mar','Abr','Mai','Jun','Jul'];
+const axisD=labelsD.map((d,i)=>{
+  const m=parseInt(d.split('/')[1])-1;
+  const prev=i>0?parseInt(labelsD[i-1].split('/')[1])-1:-1;
+  return m!==prev?monthNames[m]:'';
+});
+
+new Chart(document.getElementById('c2'),{
+  type:'bar',
+  data:{labels:axisD,datasets:[
+    {type:'bar',data:valuesD,backgroundColor:colorsD,borderRadius:0,borderSkipped:false,order:2,yAxisID:'y'},
+    {type:'line',data:mm30Chart,borderColor:GOLD,borderWidth:2,pointRadius:0,tension:0,order:1,yAxisID:'y'}
+  ]},
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{backgroundColor:'#071A14',borderColor:'#163328',borderWidth:1,titleColor:CREAM,bodyColor:CREAM_M,
+        callbacks:{
+          title:items=>labelsD[items[0].dataIndex]+'/2026',
+          label:c=>c.datasetIndex===1?' MM30: '+c.parsed.y.toFixed(3).replace('.',',')+' Bi':' Fluxo: '+c.parsed.y.toFixed(3).replace('.',',')+' Bi'
+        }}
+    },
+    scales:{
+      x:{grid:{color:GRID,lineWidth:0.8},border:{color:AXIS,width:1.5},ticks:{color:CREAM_M,font:{size:11},maxRotation:0,autoSkip:false}},
+      y:{min:-3.5,max:9.5,grid:{color:GRID,lineWidth:0.8},border:{color:AXIS,width:1.5,dash:[4,4]},
+        ticks:{color:CREAM_M,font:{size:9},callback:v=>v<0?'('+Math.abs(v).toFixed(1).replace('.',',')+')':v.toFixed(1).replace('.',','),stepSize:1}}
+    }
+  }
+});
+</script>
+</body>
+</html>
