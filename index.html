@@ -9,13 +9,13 @@
 body{background:#0A241C;font-family:Calibri,Candara,sans-serif}
 .wrap{padding:28px 28px 48px}
 .chart-block{margin-bottom:52px}
-.ttl{color:#F2EAD8;font-size:17px;font-weight:700;text-decoration:underline;margin-bottom:4px}
-.acum{color:#C9A84C;font-size:15px;font-weight:700;margin-bottom:4px}
+.ttl{color:#F2EAD8;font-size:34px;font-weight:700;text-decoration:underline;margin-bottom:4px}
+.acum{color:#C9A84C;font-size:30px;font-weight:700;margin-bottom:4px}
 .sub{color:#C9BFA8;font-size:11px;font-weight:300;margin-bottom:14px}
 .legend{display:flex;align-items:center;gap:16px;margin-bottom:10px}
-.leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#C9BFA8}
-.leg-sq{width:10px;height:10px;border-radius:2px}
-.leg-line{width:20px;height:3px;border-radius:2px;background:#C9A84C}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:22px;color:#C9BFA8}
+.leg-sq{width:20px;height:20px;border-radius:2px}
+.leg-line{width:40px;height:6px;border-radius:2px;background:#C9A84C}
 .chart-wrap{position:relative;width:100%}
 </style>
 </head>
@@ -64,7 +64,7 @@ new Chart(document.getElementById('c1'),{
     },
     scales:{
       x:{grid:{color:GRID,lineWidth:0.8},border:{color:AXIS,width:1.5},ticks:{color:CREAM_M,font:{size:18},maxRotation:45,autoSkip:false}},
-      y:{min:-18,max:30,grid:{color:GRID,lineWidth:0.8},border:{color:AXIS,width:1.5,dash:[4,4]},
+      y:{min:-26,max:30,grid:{color:GRID,lineWidth:0.8},border:{color:AXIS,width:1.5,dash:[4,4]},
         ticks:{color:CREAM_M,font:{size:9},callback:v=>v<0?'('+Math.abs(v)+')':v}}
     },
     animation:{onComplete:function(){
@@ -105,7 +105,7 @@ new Chart(document.getElementById('c2'),{
     },
     scales:{
       x:{grid:{color:GRID,lineWidth:0.8},border:{color:AXIS,width:1.5},ticks:{color:CREAM_M,font:{size:22},maxRotation:0,autoSkip:false}},
-      y:{min:-3.5,max:9.5,grid:{color:GRID,lineWidth:0.8},border:{color:AXIS,width:1.5,dash:[4,4]},
+      y:{min:-6,max:10,grid:{color:GRID,lineWidth:0.8},border:{color:AXIS,width:1.5,dash:[4,4]},
         ticks:{color:CREAM_M,font:{size:9},callback:v=>v<0?'('+Math.abs(v).toFixed(1).replace('.',',')+')':v.toFixed(1).replace('.',','),stepSize:1}}
     }
   }
@@ -113,6 +113,7 @@ new Chart(document.getElementById('c2'),{
 </script>
 </body>
 </html>
+
 
 
 
